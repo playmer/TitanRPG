@@ -16,6 +16,7 @@ var localized string Description;
 var localized array<string> LevelDescription;
 
 var config int StartingCost, CostAddPerLevel, MaxLevel;
+var config string CostPerLevelFullText;
 var config bool bUseLevelCost;
 var config array<int> LevelCost;
 var config array<int> RequiredLevels;
@@ -107,6 +108,8 @@ simulated function ClientReceiveBasicSettings(
 	bUseLevelCost = xbUseLevelCost;
 	BonusPerLevel = xBonusPerLevel;
     bDisjunctiveRequirements = xbDisjunctiveRequirements;
+
+	CostPerLevelFullText = CostPerLevelFullTextGenerator();
 }
 
 simulated function ClientReceived()
@@ -361,7 +364,15 @@ simulated function string DescriptionText()
 		text @= ForbPostText;
 	}
 	
-	text $= "||" $ MaxLevelText $ ":" @ string(MaxLevel) $ "|" $ CostPerLevelText;
+	text $= "||" $ MaxLevelText $ ":" @ string(MaxLevel) $ "|" $ CostPerLevelText @ CostPerLevelFullText;
+	
+	return text;
+}
+
+simulated function string CostPerLevelFullTextGenerator()
+{
+	local string text;
+
 	for(x = 0; x < MaxLevel; x++)
 	{
 		text @= string(CostForNextLevel(x));
@@ -369,7 +380,7 @@ simulated function string DescriptionText()
 		if(x + 1 < MaxLevel)
 			text $= ",";
 	}
-	
+
 	return text;
 }
 
@@ -396,7 +407,7 @@ simulated function int CostForNextLevel(int x)
 			}
 			else
 			{
-				Warn("LevelCost of ability" @ string(default.class) @ "does not provide enough entries for a MaxLevel of" @ string(default.MaxLevel));
+				//Warn("LevelCost of ability" @ string(default.class) @ "does not provide enough entries for a MaxLevel of" @ string(default.MaxLevel));
 				return LevelCost[LevelCost.Length - 1];
 			}
 		}
