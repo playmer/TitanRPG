@@ -16,7 +16,6 @@ var localized string Description;
 var localized array<string> LevelDescription;
 
 var config int StartingCost, CostAddPerLevel, MaxLevel;
-var config string CostPerLevelFullText;
 var config bool bUseLevelCost;
 var config array<int> LevelCost;
 var config array<int> RequiredLevels;
@@ -108,8 +107,6 @@ simulated function ClientReceiveBasicSettings(
 	bUseLevelCost = xbUseLevelCost;
 	BonusPerLevel = xBonusPerLevel;
     bDisjunctiveRequirements = xbDisjunctiveRequirements;
-
-	CostPerLevelFullText = CostPerLevelFullTextGenerator();
 }
 
 simulated function ClientReceived()
@@ -364,23 +361,8 @@ simulated function string DescriptionText()
 		text @= ForbPostText;
 	}
 	
-	text $= "||" $ MaxLevelText $ ":" @ string(MaxLevel) $ "|" $ CostPerLevelText @ CostPerLevelFullText;
+	text $= "||" $ MaxLevelText $ ":" @ string(MaxLevel) $ "|" $ CostPerLevelText @ string(Cost());
 	
-	return text;
-}
-
-simulated function string CostPerLevelFullTextGenerator()
-{
-	local string text;
-
-	for(x = 0; x < MaxLevel; x++)
-	{
-		text @= string(CostForNextLevel(x));
-		
-		if(x + 1 < MaxLevel)
-			text $= ",";
-	}
-
 	return text;
 }
 
@@ -614,7 +596,7 @@ defaultproperties
 	ReqPostText="in order to purchase this ability."
 	ForbPreText="You cannot have this ability and"
 	ForbPostText="at the same time."
-	CostPerLevelText="Cost (per level):"
+	CostPerLevelText="Cost for next level:"
 	MaxLevelText="Max Level"
 	AtLevelText="At level"
 	GrantPreText=", you are granted the"
