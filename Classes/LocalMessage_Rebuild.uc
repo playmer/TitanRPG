@@ -26,7 +26,7 @@ static function string GetString(
 
 defaultproperties
 {
-	RebuildString="has rebuilt his character!"
+	RebuildString="has rebuilt their character!"
 	SomeoneString="Someone"
 	bIsSpecial=False
 	DrawColor=(B=0,G=0)
